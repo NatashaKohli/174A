@@ -46,6 +46,13 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
       this.live_string( () => { return "Butterfly rotation angle: " + ( this.hover ? 0 : ( this.t % (2*Math.PI)).toFixed(2) ) + " radians" } );  this.new_line();
       this.key_triggered_button( "Hover in place", "h", function() { this.hover ^= 1; } ); this.new_line();      
     }  
+
+  draw_body(graphics_state, model_transform) {
+      let body_len = Math.SQRT2 * 2;
+      model_transform = model_transform.times(Mat4.scale([body_len,0.75,1]));
+      this.shapes.box.draw(graphics_state, model_transform, this.silver);
+  }
+
   draw_arm( graphics_state, model_transform )
     { const arm = model_transform.times( Mat4.translation([ 0,0,3+1 ]) );
       this.shapes.ball.draw( graphics_state, arm, this.blue );
@@ -54,42 +61,59 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
     { graphics_state.lights = [ new Light( Vec.of(  30, 30,  34, 1 ), Color.of( 0, .4, 0, 1 ), 100000 ),         // Lights for Phong_Shader to use
                                 new Light( Vec.of( -10, 20, -14, 0 ), Color.of( 1, 1, .3, 1 ), 100    ) ]
 
-                                
-                                
+                                                    
       /**********************************
       Start coding down here!!!!
       **********************************/                                     // From here on down it's just some example shapes drawn 
-                                                                              // for you -- freely replace them with your own!                          
-                                
-                                
-      
-
-
-
-
-
-
+                                                                              // for you -- freely replace them with your own!  
       
       this.shapes.box.draw( graphics_state, Mat4.scale([ 15,.1,15 ]), this.green );                           // Ground plane.                          
       
-      this.t = graphics_state.animation_time/1000;      
+      this.t = graphics_state.animation_time/1000;  
+      
+      let body_len = Math.SQRT2 * 2;
       let model_transform = Mat4.identity();                // This will be a temporary matrix that helps us draw most shapes.  It starts over as the identity every single frame.
+
+      //BODY
+      let base = model_transform;
+      model_transform = model_transform.times(Mat4.translation(Vec.of(0,10,0)));
+      this.draw_body(graphics_state, model_transform);
+     
+      //HEAD  
+      model_transform = model_transform.times(Mat4.translation(Vec.of(body_len + 1.5,0,0)));
+      model_transform = model_transform.times(Mat4.scale([1.5,1.5,1.5]));
+      this.shapes.ball.draw(graphics_state, model_transform, this.silver);
+
+      //TAIL
+      model_transform = base;
+      model_transform = model_transform.times(Mat4.translation(Vec.of(-body_len - 2,10,0)));
+      model_transform = model_transform.times(Mat4.scale([2,0.75,1]));
+      this.shapes.ball.draw(graphics_state, model_transform, this.silver);
+
+      //WING
+      model_transform = base;
+      model_transform = model_transform.times(Mat4.translation(Vec.of(body_len,10,1)));
+      //model_transform = model_transform.times(Mat4.rotation(45, Vec.of(0,1,0)));
+      //model_transform = model_transform.times(Mat4.translation(Vec.of(1,0.1/2,1)));
+      //model_transform = model_transform.times(Mat4.scale([2,0.1,2]));
+      this.shapes.box.draw(graphics_state, model_transform, this.blue);
+
+      //HELPER CODE 
+      // model_transform = model_transform.times( Mat4.translation( Vec.of( 0,10,0 ) ) );
       
-      model_transform = model_transform.times( Mat4.translation( Vec.of( 0,10,0 ) ) );
+      // if( !this.hover ) model_transform = model_transform.times( Mat4.rotation( -this.t, Vec.of( 0,1,0 ) ) );
       
-      if( !this.hover ) model_transform = model_transform.times( Mat4.rotation( -this.t, Vec.of( 0,1,0 ) ) );
+      // this.shapes.ball.draw( graphics_state, model_transform, this.silver );
       
-      this.shapes.ball.draw( graphics_state, model_transform, this.silver );
+      // model_transform = model_transform.times( Mat4.translation( Vec.of( 0,-( 1 + .2 ),0 ) ) );
       
-      model_transform = model_transform.times( Mat4.translation( Vec.of( 0,-( 1 + .2 ),0 ) ) );
-      
-      this.shapes.box.draw( graphics_state, model_transform.times( Mat4.scale([ 3,.2,3 ]) ), this.yellow );
-                                                                                    // Each loop iteration, the following will draw the same thing on a different side due to a reflection:
-      for( let side of [-1,1] )                                                     // For each of the two values -1 and 1,
-      { let flipped = model_transform.times( Mat4.scale([ 1,1,side ]) );            // Reflect the coordinate system (or not) depending on the value.
-        this.draw_arm( graphics_state, flipped );                                   // Example of how to call your own function, passing in your matrix.
-      }                                                                             
-    }    
+      // this.shapes.box.draw( graphics_state, model_transform.times( Mat4.scale([ 3,.2,3 ]) ), this.yellow );
+      //                                                                               // Each loop iteration, the following will draw the same thing on a different side due to a reflection:
+      // for( let side of [-1,1] )                                                     // For each of the two values -1 and 1,
+      // { let flipped = model_transform.times( Mat4.scale([ 1,1,side ]) );            // Reflect the coordinate system (or not) depending on the value.
+      //   this.draw_arm( graphics_state, flipped );                                   // Example of how to call your own function, passing in your matrix.
+      // }                                                                             
+    }   
 }
 </script>
 <style>
