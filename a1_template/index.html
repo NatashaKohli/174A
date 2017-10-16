@@ -26,6 +26,7 @@
 class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment below.  It is an example of drawing a hierarchical object using a "model_transform" matrix.
 { constructor( context )
     { super( context );
+      
       var shapes = { "box" :   new Cube(),                            // Load one of each of these shape definitions onto the GPU.  Once each Shape is there we 
                      "ball":   new Subdivision_Sphere( 4 ) };         // re-use it many times per display() call to get multiple of that shape to appear in the scene.
       this.submit_shapes( context, shapes );
@@ -47,10 +48,63 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
       this.key_triggered_button( "Hover in place", "h", function() { this.hover ^= 1; } ); this.new_line();      
     }  
 
-  draw_body(graphics_state, model_transform) {
-      let body_len = Math.SQRT2 * 2;
+  draw_body(graphics_state, model_transform, body_len) {
       model_transform = model_transform.times(Mat4.scale([body_len,0.75,1]));
       this.shapes.box.draw(graphics_state, model_transform, this.silver);
+      let newmatrix = Mat4.identity();
+      this.draw_head(graphics_state, newmatrix, body_len);
+      this.draw_tail(graphics_state, newmatrix, body_len);
+  }
+
+  draw_head(graphics_state, model_transform, body_len) {
+    model_transform = model_transform.times(Mat4.translation(Vec.of(body_len + 1.5,10,0)));
+    model_transform = model_transform.times(Mat4.scale([1.5,1.5,1.5]));
+    this.shapes.ball.draw(graphics_state, model_transform, this.silver);
+  }
+
+  draw_tail(graphics_state, model_transform, body_len) {
+    model_transform = model_transform.times(Mat4.translation(Vec.of(-body_len - 2,10,0)));
+    model_transform = model_transform.times(Mat4.scale([2,0.75,1]));
+    this.shapes.ball.draw(graphics_state, model_transform, this.silver);
+  }
+
+  draw_wing(graphics_state, model_transform, body_len, opposite) {
+    let body_width = 1;
+    let wing_side = 2;
+    let wing_depth = 0.1;
+    let rotate_axis = 1;
+    let angle = Math.PI/4;
+    let flap = (Math.sin(graphics_state.animation_time/1000) * 0.7);
+    let rotation = angle * flap;
+    let first_wing = model_transform;
+    let second_wing = model_transform;
+
+    if (opposite) {
+      body_width *= -1;
+      rotate_axis *= -1;
+      wing_side *= -2;
+    }
+
+    //translate to point you want to rotate around
+    first_wing = first_wing.times(Mat4.translation(Vec.of(body_len,10.75,body_width)));
+    second_wing = second_wing.times(Mat4.translation(Vec.of(-body_len,10.75,body_width)));
+
+    //rotate twice for flapping motion, and then to make diamond shape
+    first_wing = first_wing.times(Mat4.rotation(flap, Vec.of(rotate_axis,0,0)));
+    second_wing = second_wing.times(Mat4.rotation(flap, Vec.of(rotate_axis,0,0)));
+    first_wing = first_wing.times(Mat4.rotation(angle, Vec.of(0,1,0)));
+    second_wing = second_wing.times(Mat4.rotation(angle, Vec.of(0,1,0)));
+
+    //move wing to correct position
+    first_wing = first_wing.times(Mat4.translation(Vec.of(-wing_side,wing_depth,wing_side)));
+    second_wing = second_wing.times(Mat4.translation(Vec.of(-wing_side,wing_depth,wing_side)));
+
+    wing_side = 2;
+    first_wing = first_wing.times(Mat4.scale([wing_side,wing_depth,wing_side]));
+    second_wing = second_wing.times(Mat4.scale([wing_side,wing_depth,wing_side]));
+
+    this.shapes.box.draw(graphics_state, first_wing, this.blue);
+    this.shapes.box.draw(graphics_state, second_wing, this.blue);
   }
 
   draw_arm( graphics_state, model_transform )
@@ -77,26 +131,12 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
       //BODY
       let base = model_transform;
       model_transform = model_transform.times(Mat4.translation(Vec.of(0,10,0)));
-      this.draw_body(graphics_state, model_transform);
-     
-      //HEAD  
-      model_transform = model_transform.times(Mat4.translation(Vec.of(body_len + 1.5,0,0)));
-      model_transform = model_transform.times(Mat4.scale([1.5,1.5,1.5]));
-      this.shapes.ball.draw(graphics_state, model_transform, this.silver);
+      this.draw_body(graphics_state, model_transform, body_len);
 
-      //TAIL
+      //WINGS
       model_transform = base;
-      model_transform = model_transform.times(Mat4.translation(Vec.of(-body_len - 2,10,0)));
-      model_transform = model_transform.times(Mat4.scale([2,0.75,1]));
-      this.shapes.ball.draw(graphics_state, model_transform, this.silver);
-
-      //WING
-      model_transform = base;
-      model_transform = model_transform.times(Mat4.translation(Vec.of(body_len,10,1)));
-      //model_transform = model_transform.times(Mat4.rotation(45, Vec.of(0,1,0)));
-      //model_transform = model_transform.times(Mat4.translation(Vec.of(1,0.1/2,1)));
-      //model_transform = model_transform.times(Mat4.scale([2,0.1,2]));
-      this.shapes.box.draw(graphics_state, model_transform, this.blue);
+      this.draw_wing(graphics_state, model_transform, body_len, false);
+      //this.draw_wing(graphics_state, model_transform, body_len, true);
 
       //HELPER CODE 
       // model_transform = model_transform.times( Mat4.translation( Vec.of( 0,10,0 ) ) );
