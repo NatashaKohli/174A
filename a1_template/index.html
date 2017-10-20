@@ -82,7 +82,7 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
     if (opposite) {
       body_width *= -1;
       rotate_axis *= -1;
-      wing_side *= -2;
+      wing_side *= -1;
     }
 
     //translate to point you want to rotate around
@@ -136,7 +136,7 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
       //WINGS
       model_transform = base;
       this.draw_wing(graphics_state, model_transform, body_len, false);
-      //this.draw_wing(graphics_state, model_transform, body_len, true);
+      this.draw_wing(graphics_state, model_transform, body_len, true);
 
       //HELPER CODE 
       // model_transform = model_transform.times( Mat4.translation( Vec.of( 0,10,0 ) ) );
