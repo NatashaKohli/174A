@@ -75,7 +75,6 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
     let rotate_axis = 1;
     let angle = Math.PI/4;
     let flap = (Math.sin(graphics_state.animation_time/1000) * 0.7);
-    let rotation = angle * flap;
     let first_wing = model_transform;
     let second_wing = model_transform;
 
@@ -107,18 +106,25 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
     this.shapes.box.draw(graphics_state, second_wing, this.blue);
   }
 
-  draw_leg( graphics_state, model_transform ) {
+  draw_leg(graphics_state, model_transform, leg_dist, side) {
     let body_width = 1;
     let body_height = 0.75;
     let leg_height = 1.25;
     let leg_width = 0.2;
     let leg_length = 0.2;
+    let rotate_axis = 1;
     let upper_angle = 5 * Math.PI/6;
     let lower_angle = Math.PI/10;
 
+    if (side % 2 == 1) {
+      body_width *= -1;
+      leg_width *= -1;
+      rotate_axis *= -1;
+    }
+
     //upper leg
-    model_transform = model_transform.times(Mat4.translation(Vec.of(0,10 - body_height,body_width)));
-    model_transform = model_transform.times(Mat4.rotation(upper_angle, Vec.of(1,0,0)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(leg_dist,10 - body_height,body_width)));
+    model_transform = model_transform.times(Mat4.rotation(upper_angle, Vec.of(rotate_axis,0,0)));
     model_transform = model_transform.times(Mat4.translation(Vec.of(0,leg_height/2,-leg_width)));
     model_transform = model_transform.times(Mat4.scale([leg_length, leg_height/2, leg_width]));
     this.shapes.box.draw(graphics_state, model_transform, this.silver);
@@ -126,7 +132,7 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
 
     //lower_leg
     model_transform = model_transform.times(Mat4.translation(Vec.of(0,leg_height/2,leg_width)));
-    model_transform = model_transform.times(Mat4.rotation(lower_angle, Vec.of(1,0,0)));
+    model_transform = model_transform.times(Mat4.rotation(lower_angle, Vec.of(rotate_axis,0,0)));
     model_transform = model_transform.times(Mat4.translation(Vec.of(0,leg_height/2,-leg_width)));
     model_transform = model_transform.times(Mat4.scale([leg_length, leg_height/2, leg_width]));
     this.shapes.box.draw(graphics_state, model_transform, this.yellow);
@@ -162,7 +168,14 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
 
       //LEGS
       model_transform = base;
-      this.draw_leg(graphics_state, model_transform);
+      let leg_length = 0.2;
+      let leg_dist = 0;
+
+      for (let i = 0; i < 6; i++) {
+        this.draw_leg(graphics_state, model_transform, leg_dist, i);
+        if (i % 2 == 1)
+          leg_dist += (body_len/2) - (leg_length/2);
+      }
 
       //HELPER CODE 
       // model_transform = model_transform.times( Mat4.translation( Vec.of( 0,10,0 ) ) );
