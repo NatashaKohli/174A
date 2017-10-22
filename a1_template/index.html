@@ -74,7 +74,7 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
     let wing_depth = 0.1;
     let rotate_axis = 1;
     let angle = Math.PI/4;
-    let flap = (Math.sin(graphics_state.animation_time/1000) * 0.7);
+    let flap = (Math.sin(graphics_state.animation_time/500) * 0.7);
     let first_wing = model_transform;
     let second_wing = model_transform;
 
@@ -113,6 +113,7 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
     let leg_width = 0.2;
     let leg_length = 0.2;
     let rotate_axis = 1;
+    let movement = (Math.sin(graphics_state.animation_time/500)+81) * 0.25;
     let upper_angle = 5 * Math.PI/6;
     let lower_angle = Math.PI/10;
 
@@ -124,7 +125,7 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
 
     //upper leg
     model_transform = model_transform.times(Mat4.translation(Vec.of(leg_dist,10 - body_height,body_width)));
-    model_transform = model_transform.times(Mat4.rotation(upper_angle, Vec.of(rotate_axis,0,0)));
+    model_transform = model_transform.times(Mat4.rotation(upper_angle * movement, Vec.of(rotate_axis,0,0)));
     model_transform = model_transform.times(Mat4.translation(Vec.of(0,leg_height/2,-leg_width)));
     model_transform = model_transform.times(Mat4.scale([leg_length, leg_height/2, leg_width]));
     this.shapes.box.draw(graphics_state, model_transform, this.silver);
@@ -132,7 +133,7 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
 
     //lower_leg
     model_transform = model_transform.times(Mat4.translation(Vec.of(0,leg_height/2,leg_width)));
-    model_transform = model_transform.times(Mat4.rotation(lower_angle, Vec.of(rotate_axis,0,0)));
+    model_transform = model_transform.times(Mat4.rotation(lower_angle * movement, Vec.of(rotate_axis,0,0)));
     model_transform = model_transform.times(Mat4.translation(Vec.of(0,leg_height/2,-leg_width)));
     model_transform = model_transform.times(Mat4.scale([leg_length, leg_height/2, leg_width]));
     this.shapes.box.draw(graphics_state, model_transform, this.yellow);
