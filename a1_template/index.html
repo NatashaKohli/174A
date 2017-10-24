@@ -51,19 +51,18 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
   draw_body(graphics_state, model_transform, body_len) {
     let degrees = ((graphics_state.animation_time/1000) % 360);
 
-    let body_displace_x = 15*Math.sin(degrees);
-    var body_displace_z = -20*Math.cos(degrees);
-    var body_displace_y = 5*Math.sin(graphics_state.animation_time/500);
-
+    let body_x = 15*Math.sin(degrees);
+    let body_y = 5*Math.sin(graphics_state.animation_time/500);
+    let body_z = -20*Math.cos(degrees);
+    
     if( !this.hover )
     {
-      model_transform = model_transform.times(Mat4.translation(Vec.of(body_displace_x,body_displace_y,body_displace_z)));
+      model_transform = model_transform.times(Mat4.translation(Vec.of(body_x,body_y,body_z)));
       model_transform = model_transform.times(Mat4.rotation(degrees, Vec.of(0, -1, 0)));
     }
 
     model_transform = model_transform.times(Mat4.scale([body_len,0.75,1]));
     this.shapes.box.draw(graphics_state, model_transform, this.silver);
-    //let newmatrix = Mat4.identity();
     model_transform = model_transform.times(Mat4.scale([1/body_len,1/0.75,1]));
     this.draw_head(graphics_state, model_transform, body_len);
     this.draw_tail(graphics_state, model_transform, body_len);
@@ -195,18 +194,10 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
     else
       model_transform = model_transform.times(Mat4.translation(Vec.of(body_len + head, head, head/4)));
 
-    //model_transform = model_transform.times(Mat4.translation(Vec.of(0, 10, 0)));
-    //model_transform = model_transform.times(Mat4.rotation(angle, Vec.of(1,0,0)));
-    //model_transform = model_transform.times(Mat4.translation(Vec.of(body_len + head, 10 + head, head/4)));
-    //model_transform = model_transform.times(Mat4.translation(Vec.of(1, 5, head/4)));
-
     model_transform = model_transform.times(Mat4.rotation(angle, Vec.of(0,1,0)));
-    //model_transform = model_transform.times(Mat4.rotation(movement, Vec.of(rotate_axis,0,0)));
     model_transform = model_transform.times(Mat4.translation(Vec.of(0, 3*a_height/4, a_width)));
-    //model_transform = model_transform.times(Mat4.translation(Vec.of(body_len + head, 10 + head + (a_height/2), head/4)));
     a_width = 0.1;
     model_transform = model_transform.times(Mat4.scale([a_length, a_height, a_width]));
-    //model_transform = model_transform.times(Mat4.translation(Vec.of(0, 1, -1)));
     this.shapes.box.draw(graphics_state, model_transform, this.silver);
     model_transform = model_transform.times(Mat4.scale([1/a_length, 1/a_height, 1/a_width]));
 
@@ -262,22 +253,7 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
       this.draw_antenna(graphics_state, model_transform, false);
       model_transform = base;
       this.draw_antenna(graphics_state, model_transform, true);
-
-      //HELPER CODE 
-      // model_transform = model_transform.times( Mat4.translation( Vec.of( 0,10,0 ) ) );
-      
-      // if( !this.hover ) model_transform = model_transform.times( Mat4.rotation( -this.t, Vec.of( 0,1,0 ) ) );
-      
-      // this.shapes.ball.draw( graphics_state, model_transform, this.silver );
-      
-      // model_transform = model_transform.times( Mat4.translation( Vec.of( 0,-( 1 + .2 ),0 ) ) );
-      
-      // this.shapes.box.draw( graphics_state, model_transform.times( Mat4.scale([ 3,.2,3 ]) ), this.yellow );
-      //                                                                               // Each loop iteration, the following will draw the same thing on a different side due to a reflection:
-      // for( let side of [-1,1] )                                                     // For each of the two values -1 and 1,
-      // { let flipped = model_transform.times( Mat4.scale([ 1,1,side ]) );            // Reflect the coordinate system (or not) depending on the value.
-      //   this.draw_arm( graphics_state, flipped );                                   // Example of how to call your own function, passing in your matrix.
-      // }                                                                             
+                                                                           
     }   
 }
 </script>
