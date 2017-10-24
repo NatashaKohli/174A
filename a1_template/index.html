@@ -49,21 +49,35 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
     }  
 
   draw_body(graphics_state, model_transform, body_len) {
-      model_transform = model_transform.times(Mat4.scale([body_len,0.75,1]));
-      this.shapes.box.draw(graphics_state, model_transform, this.silver);
-      let newmatrix = Mat4.identity();
-      this.draw_head(graphics_state, newmatrix, body_len);
-      this.draw_tail(graphics_state, newmatrix, body_len);
+    let degrees = ((graphics_state.animation_time/1000) % 360);
+
+    let body_displace_x = 15*Math.sin(degrees);
+    var body_displace_z = -20*Math.cos(degrees);
+    var body_displace_y = 5*Math.sin(graphics_state.animation_time/500);
+
+    if( !this.hover )
+    {
+      model_transform = model_transform.times(Mat4.translation(Vec.of(body_displace_x,body_displace_y,body_displace_z)));
+      model_transform = model_transform.times(Mat4.rotation(degrees, Vec.of(0, -1, 0)));
+    }
+
+    model_transform = model_transform.times(Mat4.scale([body_len,0.75,1]));
+    this.shapes.box.draw(graphics_state, model_transform, this.silver);
+    //let newmatrix = Mat4.identity();
+    model_transform = model_transform.times(Mat4.scale([1/body_len,1/0.75,1]));
+    this.draw_head(graphics_state, model_transform, body_len);
+    this.draw_tail(graphics_state, model_transform, body_len);
+    return model_transform;
   }
 
   draw_head(graphics_state, model_transform, body_len) {
-    model_transform = model_transform.times(Mat4.translation(Vec.of(body_len + 1.5,10,0)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(body_len + 1.5,0,0)));
     model_transform = model_transform.times(Mat4.scale([1.5,1.5,1.5]));
     this.shapes.ball.draw(graphics_state, model_transform, this.silver);
   }
 
   draw_tail(graphics_state, model_transform, body_len) {
-    model_transform = model_transform.times(Mat4.translation(Vec.of(-body_len - 2,10,0)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(-body_len - 2,0,0)));
     model_transform = model_transform.times(Mat4.scale([2,0.75,1]));
     this.shapes.ball.draw(graphics_state, model_transform, this.silver);
   }
@@ -85,8 +99,8 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
     }
 
     //translate to point you want to rotate around
-    first_wing = first_wing.times(Mat4.translation(Vec.of(body_len,10.75,body_width)));
-    second_wing = second_wing.times(Mat4.translation(Vec.of(-body_len,10.75,body_width)));
+    first_wing = first_wing.times(Mat4.translation(Vec.of(body_len,0.75,body_width)));
+    second_wing = second_wing.times(Mat4.translation(Vec.of(-body_len,0.75,body_width)));
 
     //rotate twice for flapping motion, and then to make diamond shape
     first_wing = first_wing.times(Mat4.rotation(flap, Vec.of(rotate_axis,0,0)));
@@ -124,7 +138,7 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
     }
 
     //upper leg
-    model_transform = model_transform.times(Mat4.translation(Vec.of(leg_dist,10 - body_height,body_width)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(leg_dist,-body_height,body_width)));
     model_transform = model_transform.times(Mat4.rotation(upper_angle * movement, Vec.of(rotate_axis,0,0)));
     model_transform = model_transform.times(Mat4.translation(Vec.of(0,leg_height/2,-leg_width)));
     model_transform = model_transform.times(Mat4.scale([leg_length, leg_height/2, leg_width]));
@@ -138,6 +152,72 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
     model_transform = model_transform.times(Mat4.scale([leg_length, leg_height/2, leg_width]));
     this.shapes.box.draw(graphics_state, model_transform, this.yellow);
 
+  }
+
+  draw_antennas(number, graphics_state, model_transform,opposite) {
+    let a_height = 0.15;
+    let a_width = 0.1;
+    let a_length = 0.1;
+    let rotate_axis = 1;
+    let movement = (Math.sin(graphics_state.animation_time/500)+1) * 0.15;
+
+    if (opposite) {
+      rotate_axis *= -1;
+      a_width *= -1;
+    }
+
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0, a_height, a_width)));
+    model_transform = model_transform.times(Mat4.rotation(movement, Vec.of(rotate_axis,0,0)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0, a_height, -a_width)));
+    model_transform = model_transform.times(Mat4.scale([a_length, a_height, a_width]));
+    this.shapes.box.draw(graphics_state, model_transform, this.silver);
+    model_transform = model_transform.times(Mat4.scale([1/a_length, 1/a_height, 1/a_width]));
+    return model_transform;
+  }
+
+  draw_antenna(graphics_state, model_transform, opposite) {
+    let body_len = Math.SQRT2 * 2;
+    let head = 1.5;
+    let a_height = 0.15;
+    let a_width = 0.1;
+    let a_length = 0.1;
+    let a_end = 2;
+    let rotate_axis = 1;
+    let angle = Math.PI/3;
+    let movement = (Math.sin(graphics_state.animation_time/500)+1) * 0.15;
+
+    if (opposite) { 
+      rotate_axis *= -1;
+      angle *= -1;
+      a_width *= -1;
+      model_transform = model_transform.times(Mat4.translation(Vec.of(body_len + head, head, -head/4)));
+    }
+    else
+      model_transform = model_transform.times(Mat4.translation(Vec.of(body_len + head, head, head/4)));
+
+    //model_transform = model_transform.times(Mat4.translation(Vec.of(0, 10, 0)));
+    //model_transform = model_transform.times(Mat4.rotation(angle, Vec.of(1,0,0)));
+    //model_transform = model_transform.times(Mat4.translation(Vec.of(body_len + head, 10 + head, head/4)));
+    //model_transform = model_transform.times(Mat4.translation(Vec.of(1, 5, head/4)));
+
+    model_transform = model_transform.times(Mat4.rotation(angle, Vec.of(0,1,0)));
+    //model_transform = model_transform.times(Mat4.rotation(movement, Vec.of(rotate_axis,0,0)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0, 3*a_height/4, a_width)));
+    //model_transform = model_transform.times(Mat4.translation(Vec.of(body_len + head, 10 + head + (a_height/2), head/4)));
+    a_width = 0.1;
+    model_transform = model_transform.times(Mat4.scale([a_length, a_height, a_width]));
+    //model_transform = model_transform.times(Mat4.translation(Vec.of(0, 1, -1)));
+    this.shapes.box.draw(graphics_state, model_transform, this.silver);
+    model_transform = model_transform.times(Mat4.scale([1/a_length, 1/a_height, 1/a_width]));
+
+    for (let i = 0; i < 8; i++) {
+      model_transform = this.draw_antennas(i, graphics_state, model_transform, opposite);
+    }
+
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0, a_height * a_end + a_height, 0)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(a_end * a_height, a_end * a_height, a_end * a_height)));
+
+    this.shapes.ball.draw(graphics_state, model_transform, this.yellow);
   }
 
   display( graphics_state )
@@ -158,12 +238,11 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
       let model_transform = Mat4.identity();                // This will be a temporary matrix that helps us draw most shapes.  It starts over as the identity every single frame.
 
       //BODY
-      let base = model_transform;
       model_transform = model_transform.times(Mat4.translation(Vec.of(0,10,0)));
-      this.draw_body(graphics_state, model_transform, body_len);
+      model_transform = this.draw_body(graphics_state, model_transform, body_len);
+      let base = model_transform;
 
       //WINGS
-      model_transform = base;
       this.draw_wing(graphics_state, model_transform, body_len, false);
       this.draw_wing(graphics_state, model_transform, body_len, true);
 
@@ -177,6 +256,12 @@ class Butterfly_Scene extends Scene_Component  // Code your butterfly assignment
         if (i % 2 == 1)
           leg_dist += (body_len/2) - (leg_length/2);
       }
+
+      //ANTENNAS
+      model_transform = base;
+      this.draw_antenna(graphics_state, model_transform, false);
+      model_transform = base;
+      this.draw_antenna(graphics_state, model_transform, true);
 
       //HELPER CODE 
       // model_transform = model_transform.times( Mat4.translation( Vec.of( 0,10,0 ) ) );
