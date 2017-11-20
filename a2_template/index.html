@@ -2,11 +2,12 @@
 <!DOCTYPE html> <html> <head> <meta charset="UTF-8"/> <link rel="icon" href="assets/fav.ico">
 <script type="text/javascript" src="tinywebgl-ucla.js" ></script>  <!--  Javascript "include" files.  Any code in them gets executed as part of the page loading. //-->
 <script type="text/javascript" src="dependencies.js"   ></script>
+<script type="text/javascript" src="animation.js"   ></script>
 <script type="text/javascript"> "use strict"    
   window.onload = function init()        // ********************* THE ENTRY POINT OF THE WHOLE PROGRAM STARTS HERE ********************* 
     { window.contexts = {};                                                            // A global variable, "contexts".  Browsers support up to 16 WebGL contexts per page.
       
-      const scenes  = [ "Surfaces_Demo", "Movement_Controls", "Global_Info_Table" ]; // Register some scenes to the "Canvas_Manager" object -- which WebGL calls
+      const scenes  = [ "Tutorial_Animation", "Movement_Controls", "Global_Info_Table" ]; // Register some scenes to the "Canvas_Manager" object -- which WebGL calls
                                                                                        // upon every time a draw / keyboard / mouse event happens.  
       
       if( eval( "typeof " + scenes[0] ) !== "undefined" )
@@ -48,12 +49,14 @@
     }
 
 // Below is the demo you will see when you run the program!    
-  
+ 
+/*
 class Tutorial_Animation extends Scene_Component  // An example of a Scene_Component that our class Canvas_Manager can manage.  Like most, this one draws 3D shapes.
 { constructor( context )
     { super( context );
       var shapes = { 'triangle'        : new Triangle(),                            // At the beginning of our program, instantiate all shapes we plan to use,
                      'strip'           : new Square(),                              // each with only one instance in the graphics card's memory.
+                     'pyramid'           : new Pyramid(),
                      'bad_tetrahedron' : new Tetrahedron( false ),                  // For example we would only create one "cube" blueprint in the GPU, but then 
                      'tetrahedron'     : new Tetrahedron( true ),                   // re-use it many times per call to display to get multiple cubes in the scene.
                      'windmill'        : new Windmill( 10 ) };
@@ -71,7 +74,11 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
                              stars        : context.get_instance( Phong_Model  ).material( Color.of( 0,0,1,1 ), .5, .5, .5, 40, context.get_instance( "assets/stars.png" ) ) } );                             
     }
   display( graphics_state )
-    { var model_transform = Mat4.identity();             // We begin with a brand new model_transform every frame.
+    { 
+      let model_transform = Mat4.identity();
+      this.shapes.pyramid.draw(graphics_state, model_transform, this.purplePlastic);
+      
+      var model_transform = Mat4.identity();             // We begin with a brand new model_transform every frame.
       
       // *** Lights: *** Values of vector or point lights over time.  Two different lights *per shape* supported by Phong_Shader; more requires changing a number in the vertex 
       graphics_state.lights = [ new Light( Vec.of(  30,  30,  34, 1 ), Color.of( 0, .4, 0, 1 ), 100000 ),      // shader.  Arguments to construct a Light(): Light source position
@@ -102,8 +109,10 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
       this.shapes.windmill       .draw( graphics_state, model_transform,                      this.fire          );
       model_transform.post_multiply( Mat4.translation([ 0, -2, 0 ]) );
       this.shapes.windmill       .draw( graphics_state, model_transform,                      this.blueGlass     );
+    
     }
 }
+*/
 </script>
 <style>
   table { border-collapse: collapse; display:block; overflow-x: auto; }
