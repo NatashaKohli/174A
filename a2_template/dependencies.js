@@ -24,6 +24,36 @@ class Square extends Shape      // A square, demonstrating shared vertices.  On 
     }
 }
 
+//custom shape
+class Pyramid extends Shape {
+  constructor() {
+    super();
+    this.positions.push( ...Vec.cast( [-1,-1,1], [0,1,0], [1, -1, 1]) );
+    this.positions.push( ...Vec.cast( [0,1,0], [1,-1,-1], [1, -1, 1]) );
+    this.positions.push( ...Vec.cast( [1,-1,-1], [0,1,0], [-1, -1, -1]) );
+    this.positions.push( ...Vec.cast( [-1,-1,-1], [0,1,0], [-1, -1, 1]) );
+    this.positions.push( ...Vec.cast( [-1,-1,1], [-1,-1,-1], [1, -1, 1]) );
+    this.positions.push( ...Vec.cast( [-1,-1,-1], [1,-1,-1], [1, -1, 1]) );
+
+    this.normals.push(...Vec.cast( [0,0,1], [0,0,1], [0,0,1]) );
+    this.normals.push(...Vec.cast( [1,0,0], [1,0,0], [1,0,0]) );
+    // this.normals.push(...Vec.cast( [0,1,0], [0,1,0], [0,1,0]) );
+    this.normals.push(...Vec.cast( [0,0,-1], [0,0,-1], [0,0,-1]) );
+    this.normals.push(...Vec.cast( [-1,0,0], [-1,0,0], [-1,0,0]) );
+    this.normals.push(...Vec.cast( [0,-1,0], [0,-1,0], [0,-1,0]) );
+    this.normals.push(...Vec.cast( [0,-1,0], [0,-1,0], [0,-1,0]) );
+
+    this.texture_coords.push(...Vec.cast( [0,0,1], [1,1,0]) );
+    this.texture_coords.push(...Vec.cast( [1,1,1], [0,0,0]) );
+    this.texture_coords.push(...Vec.cast( [0,0,1], [1,1,0]) );
+    this.texture_coords.push(...Vec.cast( [0,0,1], [1,1,0]) );
+    this.texture_coords.push(...Vec.cast( [0,0,0], [1,1,0]) );
+    this.texture_coords.push(...Vec.cast( [0,1,1], [1,1,0]) );
+
+    this.indices.push( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 );
+  }
+}
+
   // *********** TETRAHEDRON ***********
 class Tetrahedron extends Shape            // A demo of flat vs smooth shading (a boolean argument selects which one). Also our first 3D, non-planar shape.
 { constructor( using_flat_shading ) 
