@@ -40,7 +40,7 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
   draw_floor(graphics_state) {
     let rotate = Math.PI/2;
     let model_transform = Mat4.identity();
-    model_transform = model_transform.times(Mat4.translation(Vec.of(0, -5, 0)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0, -2.8, 0)));
     model_transform = model_transform.times(Mat4.rotation(rotate, Vec.of(1, 0, 0)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(10, 5, 0)));
     //model_transform = model_transform.times(Mat4.rotation(45, Vec.of(1, 0, 0)));
@@ -48,7 +48,10 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
   }
 
   draw_body(graphics_state) {
+    let jump = (Math.sin(graphics_state.animation_time/200)) * 0.25;
+
     let model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0, jump, 0)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(1.2, 1.5, 1)));
     this.shapes.sphere.draw(graphics_state, model_transform, this.fur);
     model_transform = model_transform.times(Mat4.scale(Vec.of(1/1.2, 1/1.5, 1)));
@@ -116,17 +119,22 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
 
   draw_leg(graphics_state, model_transform, opposite) {
     let X_TOP_LEG = 0.5;
-    let rotate = Math.PI/4;
+    let movement_u = (Math.sin(graphics_state.animation_time/200) + 1) * 0.5;
 
-    let base = model_transform;
+    if (opposite) {
+      X_TOP_LEG *= -1;
+    }
 
-    model_transform = model_transform.times(Mat4.translation(Vec.of(X_TOP_LEG, -1.75, 0)));
+    //top of leg
+    model_transform = model_transform.times(Mat4.translation(Vec.of(X_TOP_LEG, -1.7, 0)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(0.25, 0.35, 0.25)));
     this.shapes.sphere.draw(graphics_state, model_transform, this.fur);
 
-    model_transform = base;
-    model_transform = model_transform.times(Mat4.translation(Vec.of(X_TOP_LEG, -2.25, 0)));
-    model_transform = model_transform.times(Mat4.rotation(rotate, Vec.of(1, 0, 0)));
+    //bottom of leg
+    model_transform = model_transform.times(Mat4.scale(Vec.of(1/0.25, 1/0.35, 1/0.25)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0, -0.25, 0)));
+    model_transform = model_transform.times(Mat4.rotation(movement_u, Vec.of(1, 0, 0)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0, -0.25, 0)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(0.25, 0.35, 0.25)));
     this.shapes.sphere.draw(graphics_state, model_transform, this.fur);
     //model_transform = model_transform.times(Mat4.scale(Vec.of(1/0.25, 1/0.5, 1/0.25)));
@@ -155,11 +163,11 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     model_transform = base;
     this.draw_arm(graphics_state, model_transform, true);
     this.draw_arm(graphics_state, model_transform, false);
-/*
+
     //LEGS
     this.draw_leg(graphics_state, model_transform, true);
     this.draw_leg(graphics_state, model_transform, false);
-*/
+
   }
     
   display( graphics_state ) { 
