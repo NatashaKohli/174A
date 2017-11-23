@@ -79,36 +79,39 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
   }
 
   draw_arm(graphics_state, model_transform, opposite) {
-    let X_TOP_ARM = 1.4;
-    let X_BOT_ARM = 2.1;
-    let rotate_t = 0.87;
-    let rotate_b = -Math.PI/8;
+    let X_TOP_ARM = 1;
+    let rotate = 0.87;
+    let movement_u = (Math.sin(graphics_state.animation_time/200)) * 0.3;
+    let movement_l = (Math.sin(graphics_state.animation_time/200)+3) * 0.25;
 
     if (opposite) {
       X_TOP_ARM *= -1;
-      X_BOT_ARM *= -1;
-      rotate_t *= -1;
-      rotate_b *= -1;
+      rotate *= -1;
+      movement_u *= -1;
+      movement_l *= -1;
     }
 
-    let base = model_transform;
-
     //top of arm
-    model_transform = model_transform.times(Mat4.translation(Vec.of(X_TOP_ARM, 0.5, 0)));
-    model_transform = model_transform.times(Mat4.rotation(rotate_t, Vec.of(0, 0, 1)));
-    model_transform = model_transform.times(Mat4.scale(Vec.of(0.25, 0.5, 0.25)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(X_TOP_ARM , 0.7, 0.3)));
+    model_transform = model_transform.times(Mat4.rotation(rotate, Vec.of(0, 0, 1)));
+    model_transform = model_transform.times(Mat4.rotation(movement_u, Vec.of(0, 0, 1)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0, -0.45, 0)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.25, 0.4, 0.25)));
     this.shapes.sphere.draw(graphics_state, model_transform, this.fur);
 
     //bottom of arm
-    model_transform = base;
-    model_transform = model_transform.times(Mat4.translation(Vec.of(X_BOT_ARM , -0.1, 0)));
-    model_transform = model_transform.times(Mat4.rotation(rotate_t, Vec.of(0, 0, 1)));
-    model_transform = model_transform.times(Mat4.scale(Vec.of(0.25, 0.5, 0.25)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(1/0.25, 1/0.5, 1/0.25)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0 , -0.4, 0)));
+    model_transform = model_transform.times(Mat4.rotation(movement_l, Vec.of(0, 0, 1)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0 , -0.45, 0)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.25, 0.4, 0.25)));
     this.shapes.sphere.draw(graphics_state, model_transform, this.fur);
 
-    model_transform = base;
-
-
+    //paw
+    model_transform = model_transform.times(Mat4.scale(Vec.of(1/0.25, 1/0.5, 1/0.25)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0 , -0.65, 0)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 0.2)));
+    this.shapes.sphere.draw(graphics_state, model_transform, this.fur);
   }
 
   draw_leg(graphics_state, model_transform, opposite) {
@@ -147,12 +150,12 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     this.draw_ear(graphics_state, model_transform, true);
     this.draw_ear(graphics_state, model_transform, false);
     this.draw_hat(graphics_state, model_transform);
-/*
+
     //ARMS
     model_transform = base;
     this.draw_arm(graphics_state, model_transform, true);
     this.draw_arm(graphics_state, model_transform, false);
-
+/*
     //LEGS
     this.draw_leg(graphics_state, model_transform, true);
     this.draw_leg(graphics_state, model_transform, false);
