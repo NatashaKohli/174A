@@ -30,7 +30,7 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
         brown:  context.get_instance( Phong_Model ).material( Color.of( .3, .3, .1,  1 ), .2, 1,  1, 40 ),
         brown2:  context.get_instance( Phong_Model ).material( Color.of( .4, .26, .13,  1 ), 1, .7,  1, 40 ),  // which returns a special-made "material" 
         red:    context.get_instance( Phong_Model ).material( Color.of(  1,  0,  0, .9 ), .1, .7, 1, 40 ),  // (a JavaScript object)
-        green:  context.get_instance( Phong_Model ).material( Color.of(  0, .5,  0,  1 ), .1, .7, 1, 40 ),
+        green:  context.get_instance( Phong_Model ).material( Color.of(  0, .5,  0,  1 ), 1, .5, .5, 40 ),
         blue:   context.get_instance( Phong_Model ).material( Color.of(  0,  0,  1, .8 ), .1, .7, 1, 40 ),
         silver: context.get_instance( Phong_Model ).material( Color.of( .8, .8, .8,  1 ),  0,  1, 1, 40 ) } 
       );    
@@ -42,9 +42,9 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     let model_transform = Mat4.identity();
     model_transform = model_transform.times(Mat4.translation(Vec.of(0, -2.8, 0)));
     model_transform = model_transform.times(Mat4.rotation(rotate, Vec.of(1, 0, 0)));
-    model_transform = model_transform.times(Mat4.scale(Vec.of(10, 5, 0)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(300, 300, 0)));
     //model_transform = model_transform.times(Mat4.rotation(45, Vec.of(1, 0, 0)));
-    this.shapes.strip.draw(graphics_state, model_transform, this.purplePlastic);
+    this.shapes.strip.draw(graphics_state, model_transform, this.green);
   }
 
   draw_body(graphics_state) {
@@ -169,6 +169,25 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     this.draw_leg(graphics_state, model_transform, false);
 
   }
+
+  draw_column(graphics_state, opposite) {
+    let distance = 8;
+    let movement = ((graphics_state.animation_time/150) );
+
+    if (opposite) {
+      distance *= -1;
+    }
+
+    let model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(distance, 2.2, 0)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.5, 5, 0.5)));
+    this.shapes.cube.draw(graphics_state, model_transform, this.blue); 
+
+    model_transform = model_transform.times(Mat4.scale(Vec.of(1/0.5, 1/10, 1/0.5)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0, 11, 0)));
+    model_transform = model_transform.times(Mat4.rotation(movement, Vec.of(0, 1, 0)));
+    this.shapes.cone.draw(graphics_state, model_transform, this.stars);
+  }
     
   display( graphics_state ) { 
     graphics_state.lights = [ new Light( Vec.of(  30,  30,  34, 1 ), Color.of( 0, 0, 0, 1 ), 10 ),
@@ -176,5 +195,8 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
 
     this.draw_floor(graphics_state);
     this.draw_bear(graphics_state);
+
+    this.draw_column(graphics_state, true);
+    this.draw_column(graphics_state, false);
   }
 }
