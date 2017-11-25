@@ -1,4 +1,19 @@
 //Global variables
+frame = 0;
+
+CAM_START_X = 7.9; 
+CAM_START_Y = 14; 
+CAM_START_Z = 0; 
+CAM_MOVE_X = -1.45;
+CAM_MOVE_Y = -2.55;
+CAM_MOVE_Z = 4.3;
+
+LOOK_START_X = 8; 
+LOOK_START_Y = 11;
+LOOK_START_Z = 0;
+LOOK_MOVE_X = -1.45;
+LOOK_MOVE_Y = -2;
+LOOK_MOVE_Z = 0.01;
 
 //Run game
 class Tutorial_Animation extends Scene_Component  // An example of a Scene_Component that our class Canvas_Manager can manage.  Like most, this one draws 3D shapes.
@@ -189,7 +204,7 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     this.shapes.cone.draw(graphics_state, model_transform, this.stars);
   }
     
-  display( graphics_state ) { 
+  draw_scene( graphics_state ) { 
     graphics_state.lights = [ new Light( Vec.of(  30,  30,  34, 1 ), Color.of( 0, 0, 0, 1 ), 10 ),
     new Light( Vec.of( 30, 30, 34, 0 ), Color.of( 1, 1, 1, 1 ), 10    ) ];
 
@@ -198,5 +213,25 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
 
     this.draw_column(graphics_state, true);
     this.draw_column(graphics_state, false);
+
+    let t = graphics_state.animation_time/1000;
+    let c = graphics_state.camera_transform;
+
+    if( t < 2)
+      graphics_state.camera_transform = Mat4.look_at(Vec.of(7.9, 14, 0), Vec.of(8, 11, 0), Vec.of(0, 1, 0));
+
+    if ((c[0][3] > 0 || c[1][3] > 0 || c[2][3] > -23) && t > 2) {
+      
+      graphics_state.camera_transform = Mat4.look_at(Vec.of(CAM_START_X + ((t-1) * CAM_MOVE_X), CAM_START_Y + ((t-1) * CAM_MOVE_Y), CAM_START_Z + ((t-1) * CAM_MOVE_Z)), 
+                                                    Vec.of(LOOK_START_X + ((t-1) * LOOK_MOVE_X), LOOK_START_Y + ((t-1) * LOOK_MOVE_Y), LOOK_START_Z + ((t-1) * LOOK_MOVE_Z)), 
+                                                    Vec.of(0, 1, 0));
+    }
+
   }
+
+  display( graphics_state ) {
+    this.draw_scene(graphics_state);
+    frame++;
+  }
+
 }
