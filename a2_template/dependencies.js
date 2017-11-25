@@ -157,6 +157,34 @@ class Cube extends Shape    // A cube inserts six square strips into its arrays.
         } 
     } 
 }
+
+class Text_Line extends Shape  // Draws a horizontal arrangment of quads textured over with images of ASCII characters, spelling out a string.
+{ constructor( max_size )
+    { super();
+      this.max_size = max_size;
+      var object_transform = Mat4.identity();
+      for( var i = 0; i < max_size; i++ )
+      { Square.prototype.insert_transformed_copy_into( this, [], object_transform );      // Each quad is a separate square object.
+        object_transform.post_multiply( Mat4.translation([ 1.5,0,0 ]) );
+      }
+    }
+  set_string( line, gl = this.gl )        // Overwrite the texture coordinates buffer with new values per quad that enclose each of the string's characters.
+    { this.texture_coords = [];
+      for( var i = 0; i < this.max_size; i++ )
+        {
+          var row = Math.floor( ( i < line.length ? line.charCodeAt( i ) : ' '.charCodeAt() ) / 16 ),
+              col = Math.floor( ( i < line.length ? line.charCodeAt( i ) : ' '.charCodeAt() ) % 16 );
+
+          var skip = 3, size = 32, sizefloor = size - skip;
+          var dim = size * 16,  left  = (col * size + skip) / dim,      top    = (row * size + skip) / dim,
+                                right = (col * size + sizefloor) / dim, bottom = (row * size + sizefloor + 5) / dim;
+
+          this.texture_coords.push( ...Vec.cast( [ left,  1-bottom], [ right, 1-bottom ], [ left,  1-top ], [ right, 1-top ] ) );
+        }
+      gl.bindBuffer( gl.ARRAY_BUFFER, this.graphics_card_buffers[2] );
+      gl.bufferData( gl.ARRAY_BUFFER, Mat.flatten_2D_to_1D( this.texture_coords ), gl.STATIC_DRAW );
+    }
+}
   
 class Phong_Model extends Shader          // ******* THE DEFAULT SHADER: Phong Reflection Model with Gouraud option ******* (also see Wikipedia article)
 // The "vertex_glsl_code" string below is code that is sent to the graphics card at runtime, where on each run it gets compiled and linked there.  Thereafter, all of your 
