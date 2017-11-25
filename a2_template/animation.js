@@ -2,6 +2,8 @@
 frame = 0;
 points = 0;
 
+let music = new Audio('assets/pinkandwhite.mp3');
+
 CAM_START_X = 7.9; 
 CAM_START_Y = 14; 
 CAM_START_Z = 0; 
@@ -16,6 +18,11 @@ LOOK_MOVE_X = -1.45;
 LOOK_MOVE_Y = -2;
 LOOK_MOVE_Z = 0.01;
 
+DROP_A = 15;
+DROP_S = 15;
+DROP_K = 15;
+DROP_L = 15;
+
 //Run game
 class Tutorial_Animation extends Scene_Component  // An example of a Scene_Component that our class Canvas_Manager can manage.  Like most, this one draws 3D shapes.
 { constructor( context )
@@ -27,7 +34,9 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
                      'tetrahedron'     : new Tetrahedron( true ),                   // re-use it many times per call to display to get multiple cubes in the scene.
                      'windmill'        : new Windmill( 10 ), 
                      'cube'            : new Cube(),
-                     'sphere'          : new Subdivision_Sphere( 4 )};
+                     'sphere'          : new Subdivision_Sphere( 4 ),
+                     'text'            : new Text_Line(35)
+                    };
       this.submit_shapes( context, shapes );
       
        // Place the camera, which is stored in a scratchpad for globals.  Secondly, setup the projection:  The matrix that determines how depth is treated.  It projects 3D points onto a plane.
@@ -44,10 +53,11 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
         fur: context.get_instance( Phong_Model  ).material( Color.of( .3,.3,.1,1 ), .2, 1, 1, 40, context.get_instance( "assets/bear.jpg" ) ),
         sky: context.get_instance( Phong_Model  ).material( Color.of( .96,.79,.8, 1), .5, 1, 1, 40, context.get_instance( "assets/sky.jpg" ) ),
         ground: context.get_instance( Phong_Model  ).material( Color.of( 0,0,0, 1), .5, 1, 1, 40, context.get_instance( "assets/ground.png" ) ),
+        text: context.get_instance( Phong_Model  ).material( Color.of( 0,0,0, 1), .5, 1, 1, 40, context.get_instance( "assets/text.png" ) ),
         yellow: context.get_instance( Phong_Model ).material( Color.of( .93, .93, 0,  1 ), 0.5, 1, .7, 40 ),  // Call material() on the Phong_Shader,
         brown:  context.get_instance( Phong_Model ).material( Color.of( .3, .3, .1,  1 ), .2, 1,  1, 40 ),
         brown2:  context.get_instance( Phong_Model ).material( Color.of( .4, .26, .13,  1 ), 1, .7,  1, 40 ),  // which returns a special-made "material" 
-        red:    context.get_instance( Phong_Model ).material( Color.of(  1,  0,  0, .9 ), .1, .7, 1, 40 ),  // (a JavaScript object)
+        red:    context.get_instance( Phong_Model ).material( Color.of(  1,  0,  0, 1 ), 0.6, .7, 1, 40 ),  // (a JavaScript object)
         green:  context.get_instance( Phong_Model ).material( Color.of(  0, .5,  0,  1 ), 1, .5, .5, 40 ),
         blue:   context.get_instance( Phong_Model ).material( Color.of(  0,  0,  1, 1 ), .5, .5, .5, 40 ),
         silver: context.get_instance( Phong_Model ).material( Color.of( .8, .8, .8,  1 ),  0,  1, 1, 40 ) } 
@@ -58,6 +68,9 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
       this.controls.add("S", function() {points++;}); 
       this.controls.add("K", function() {points++;}); 
       this.controls.add("L", function() {points++;}); 
+
+      //music.play();
+      
     }
 
   draw_floor(graphics_state) {
@@ -206,6 +219,15 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
 
   }
 
+  drop_a(graphics_state) {
+    let fall = (Math.sin(graphics_state.animation_time/200)) * 0.25;
+    
+    let model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0, DROP_A, 15)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 0.2)));
+    this.shapes.sphere.draw(graphics_state, model_transform, this.red);
+  }
+
   draw_column(graphics_state, opposite) {
     let distance = 8;
     let movement = ((graphics_state.animation_time/150) );
@@ -255,10 +277,23 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     this.draw_column(graphics_state, true);
     this.draw_column(graphics_state, false);
 
+    if (t > 10 && t < 20) {
+      this.drop_a(graphics_state);
+      DROP_A -= 0.04;
+    }
+
   }
 
   display( graphics_state ) {
     this.draw_scene(graphics_state);
+
+    //Display frame rate
+    let model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(-6.75, 5.4, 10)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 1)));
+    this.shapes.text.set_string( "Frame Rate: " + Math.round(1/(graphics_state.animation_delta_time/1000)) );
+    this.shapes.text.draw( graphics_state, model_transform, this.text);
+
     frame++;
   }
 
