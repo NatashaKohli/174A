@@ -291,6 +291,64 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 0.2)));
     this.shapes.sphere.draw(graphics_state, model_transform, this.yellow);
   }
+
+  drop_sequence(graphics_state, t) {
+    if (t > 8 && t < 12) {
+      this.drop_a(graphics_state);
+      DROP_A -= 0.045;
+    }
+
+    if (t > 9 && t < 13) {
+      this.drop_k(graphics_state);
+      DROP_K -= 0.045;
+    }
+
+    if (t > 11 && t < 14.5) {
+      this.drop_l(graphics_state);
+      DROP_L -= 0.055;
+    }
+
+    if (t > 13 && t < 17) {
+      this.drop_a(graphics_state);
+      DROP_A -= 0.045;
+    }
+
+    if (t > 14 && t < 17.5) {
+      this.drop_s(graphics_state);
+      DROP_S -= 0.055;
+    }
+
+    if (t > 16 && t < 19) {
+      this.drop_k(graphics_state);
+      DROP_K -= 0.06;
+    }
+
+    if (t > 17 && t < 21) {
+      this.drop_a(graphics_state);
+      DROP_A -= 0.045;
+    }
+
+    if (t > 19 && t < 22) {
+      this.drop_l(graphics_state);
+      DROP_L -= 0.06;
+    }
+
+    if (t > 21 && t < 24.5) {
+      this.drop_k(graphics_state);
+      DROP_K -= 0.055;
+    }
+
+    if (t > 22 && t < 26) {
+      this.drop_s(graphics_state);
+      DROP_S -= 0.045;
+    }
+
+    if (t > 24 && t < 28) {
+      this.drop_l(graphics_state);
+      DROP_L -= 0.045;
+    }
+
+  }
     
   draw_scene( graphics_state ) { 
     graphics_state.lights = [ new Light( Vec.of(  30,  30,  34, 1 ), Color.of( 0, 0, 0, 1 ), 10 ),
@@ -315,15 +373,7 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
                                                     
     }
 
-    if (t > 8 && t < 12) {
-      this.drop_a(graphics_state);
-      DROP_A -= 0.045;
-    }
-
-    if (t > 9 && t < 13) {
-      this.drop_k(graphics_state);
-      DROP_K -= 0.045;
-    }
+    this.drop_sequence(graphics_state, t);
 
     let model_transform = Mat4.identity();
 
@@ -334,26 +384,38 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     this.draw_column(graphics_state, true);
     this.draw_column(graphics_state, false);
 
-    if (A_PRESSED)
+    if (A_PRESSED) {
       this.draw_button(graphics_state, -2.7, this.blue);
+      if (DROP_A < -2.15 && DROP_A > -2.45)
+        points += 25;
+    }
     else 
       this.draw_button(graphics_state, -2.7, this.yellow);
     this.draw_letter(graphics_state, -2.36, "A");
 
-    if (S_PRESSED)
+    if (S_PRESSED) {
       this.draw_button(graphics_state, -1.25, this.blue);
+      if (DROP_S < -2.15 && DROP_S > -2.45)
+        points += 25;
+    }
     else 
       this.draw_button(graphics_state, -1.25, this.yellow);
     this.draw_letter(graphics_state, -1.1, "S");
 
-    if (K_PRESSED)
+    if (K_PRESSED) {
       this.draw_button(graphics_state, 1.25, this.blue);
+      if (DROP_K < -2.15 && DROP_K > -2.45)
+        points += 25;
+    }
     else 
       this.draw_button(graphics_state, 1.25, this.yellow);
     this.draw_letter(graphics_state, 1.1, "K");
 
-    if (L_PRESSED)
+    if (L_PRESSED) {
       this.draw_button(graphics_state, 2.7, this.blue);
+      if (DROP_L < -2.15 && DROP_L > -2.45)
+        points += 25;
+    }
     else 
       this.draw_button(graphics_state, 2.7, this.yellow);
     this.draw_letter(graphics_state, 2.38, "L");
@@ -392,6 +454,12 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     model_transform = model_transform.times(Mat4.translation(Vec.of(-6.75, 5, 10)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 1)));
     this.shapes.text.set_string( "Animation Time: " + (graphics_state.animation_time/1000).toFixed(2) );
+    this.shapes.text.draw( graphics_state, model_transform, this.text);
+
+    model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(-6.75, 4.6, 10)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 1)));
+    this.shapes.text.set_string( "Points: " + points );
     this.shapes.text.draw( graphics_state, model_transform, this.text);
 
     frame++;
