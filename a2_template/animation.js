@@ -20,6 +20,11 @@ LOOK_MOVE_X = -1.45;
 LOOK_MOVE_Y = -2;
 LOOK_MOVE_Z = 0.01;
 
+A_PRESSED = false;
+S_PRESSED = false;
+K_PRESSED = false;
+L_PRESSED = false;
+
 DROP_A = 15;
 DROP_S = 15;
 DROP_K = 15;
@@ -37,7 +42,8 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
                      'windmill'        : new Windmill( 10 ), 
                      'cube'            : new Cube(),
                      'sphere'          : new Subdivision_Sphere( 4 ),
-                     'text'            : new Text_Line(35)
+                     'text'            : new Text_Line(35),
+                     'letter'            : new Text_Line(1)
                     };
       this.submit_shapes( context, shapes );
       
@@ -62,14 +68,15 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
         red:    context.get_instance( Phong_Model ).material( Color.of(  1,  0,  0, 1 ), 0.6, .7, 1, 40 ),  // (a JavaScript object)
         green:  context.get_instance( Phong_Model ).material( Color.of(  0, .5,  0,  1 ), 1, .5, .5, 40 ),
         blue:   context.get_instance( Phong_Model ).material( Color.of(  0,  0,  1, 1 ), .5, .5, .5, 40 ),
-        silver: context.get_instance( Phong_Model ).material( Color.of( .8, .8, .8,  1 ),  0,  1, 1, 40 ) } 
+        skyblue:   context.get_instance( Phong_Model ).material( Color.of(  .04,  .71,  1, 1 ), .5, .5, .5, 40 ),
+        silver: context.get_instance( Phong_Model ).material( Color.of( .8, .8, .8,  1 ),  0.9,  1, 1, 40 ) } 
       );    
   
       //ADD CONTROLS
-      this.controls.add("A", function() {points++;}); 
-      this.controls.add("S", function() {points++;}); 
-      this.controls.add("K", function() {points++;}); 
-      this.controls.add("L", function() {points++;}); 
+      this.controls.add("A", function() {A_PRESSED = true;}); 
+      this.controls.add("S", function() {S_PRESSED = true;}); 
+      this.controls.add("K", function() {K_PRESSED = true;}); 
+      this.controls.add("L", function() {L_PRESSED = true;}); 
       this.controls.add("enter", function() {start = 1;});
       
     }
@@ -220,15 +227,6 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
 
   }
 
-  drop_a(graphics_state) {
-    let fall = (Math.sin(graphics_state.animation_time/200)) * 0.25;
-    
-    let model_transform = Mat4.identity();
-    model_transform = model_transform.times(Mat4.translation(Vec.of(0, DROP_A, 15)));
-    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 0.2)));
-    this.shapes.sphere.draw(graphics_state, model_transform, this.red);
-  }
-
   draw_column(graphics_state, opposite) {
     let distance = 8;
     let movement = ((graphics_state.animation_time/150) );
@@ -246,6 +244,33 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     model_transform = model_transform.times(Mat4.translation(Vec.of(0, 11, 0)));
     model_transform = model_transform.times(Mat4.rotation(movement, Vec.of(0, 1, 0)));
     this.shapes.cone.draw(graphics_state, model_transform, this.stars);
+  }
+
+  draw_button(graphics_state, x_loc, color) {
+    let model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(x_loc, -2.3, 15)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 0.2)));
+    
+    this.shapes.sphere.draw(graphics_state, model_transform, color);
+  }
+
+  draw_letter(graphics_state, x_loc, string) {
+
+    let model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(x_loc, -2, 16)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 0.2)));
+
+    this.shapes.letter.set_string(string);
+    this.shapes.letter.draw( graphics_state, model_transform, this.text);
+  }
+
+  drop_a(graphics_state) {
+    let fall = (Math.sin(graphics_state.animation_time/200)) * 0.25;
+    
+    let model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(0, DROP_A, 15)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 0.2)));
+    this.shapes.sphere.draw(graphics_state, model_transform, this.red);
   }
     
   draw_scene( graphics_state ) { 
@@ -271,12 +296,38 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
                                                     
     }
 
+    let model_transform = Mat4.identity();
+
     this.draw_floor(graphics_state);
     this.draw_sky(graphics_state);
     this.draw_bear(graphics_state);
 
     this.draw_column(graphics_state, true);
     this.draw_column(graphics_state, false);
+
+    if (A_PRESSED)
+      this.draw_button(graphics_state, -2.7, this.red);
+    else 
+      this.draw_button(graphics_state, -2.7, this.yellow);
+    this.draw_letter(graphics_state, -2.36, "A");
+
+    if (S_PRESSED)
+      this.draw_button(graphics_state, -1.25, this.red);
+    else 
+      this.draw_button(graphics_state, -1.25, this.yellow);
+    this.draw_letter(graphics_state, -1.1, "S");
+
+    if (K_PRESSED)
+      this.draw_button(graphics_state, 1.25, this.red);
+    else 
+      this.draw_button(graphics_state, 1.25, this.yellow);
+    this.draw_letter(graphics_state, 1.1, "K");
+
+    if (L_PRESSED)
+      this.draw_button(graphics_state, 2.7, this.red);
+    else 
+      this.draw_button(graphics_state, 2.7, this.yellow);
+    this.draw_letter(graphics_state, 2.38, "L");
 
     if (t > 10 && t < 20) {
       this.drop_a(graphics_state);
@@ -313,6 +364,10 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     this.shapes.text.draw( graphics_state, model_transform, this.text);
 
     frame++;
+    A_PRESSED = false;
+    S_PRESSED = false;
+    K_PRESSED = false;
+    L_PRESSED = false;
     }
   }
 
