@@ -1,6 +1,8 @@
 //Global variables
 frame = 0;
 points = 0;
+start = 0;
+m_playing = 0;
 
 let music = new Audio('assets/pinkandwhite.mp3');
 
@@ -68,8 +70,7 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
       this.controls.add("S", function() {points++;}); 
       this.controls.add("K", function() {points++;}); 
       this.controls.add("L", function() {points++;}); 
-
-      //music.play();
+      this.controls.add("enter", function() {start = 1;});
       
     }
 
@@ -284,7 +285,24 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
 
   }
 
+  draw_opening(graphics_state) {
+    let model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(-8, 0, 0)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.4, 0.4, 1)));
+    this.shapes.text.set_string( "Ready to play? Press enter!" );
+    this.shapes.text.draw( graphics_state, model_transform, this.text);
+  }
+
   display( graphics_state ) {
+    if (!start) {
+      this.draw_opening(graphics_state);
+      graphics_state.animation_time = 0;
+    }
+    else {
+    if (!m_playing) {
+      music.play();
+      m_playing = 1;
+    }
     this.draw_scene(graphics_state);
 
     //Display frame rate
@@ -295,6 +313,7 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     this.shapes.text.draw( graphics_state, model_transform, this.text);
 
     frame++;
+    }
   }
 
 }
