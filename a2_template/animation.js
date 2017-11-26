@@ -53,22 +53,16 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
       // *** Materials: *** Declare new ones as temps when needed; they're just cheap wrappers for some numbers.  1st parameter:  Color (4 floats in RGBA format),
       // 2nd: Ambient light, 3rd: Diffuse reflectivity, 4th: Specular reflectivity, 5th: Smoothness exponent, 6th: Optional texture object, leave off for un-textured.
       Object.assign( this, { 
-        purplePlastic: context.get_instance( Phong_Model  ).material( Color.of( .9,.5,.9, 1 ), .4, .4, .8, 40 ),
-        //greyPlastic  : context.get_instance( Phong_Model  ).material( Color.of( .5,.5,.5, 1 ), .4, .8, .4, 20 ),   // Smaller exponent means 
-        //blueGlass    : context.get_instance( Phong_Model  ).material( Color.of( .5,.5, 1,.2 ), .4, .8, .4, 40 ),   // a bigger shiny spot.
-        //fire         : context.get_instance( Funny_Shader ).material(),
         stars        : context.get_instance( Phong_Model  ).material( Color.of( 0,0,1,1 ), .5, .5, .5, 40, context.get_instance( "assets/stars.png" ) ),
         fur: context.get_instance( Phong_Model  ).material( Color.of( .3,.3,.1,1 ), .2, 1, 1, 40, context.get_instance( "assets/bear.jpg" ) ),
         sky: context.get_instance( Phong_Model  ).material( Color.of( .96,.79,.8, 1), .5, 1, 1, 40, context.get_instance( "assets/sky.jpg" ) ),
         ground: context.get_instance( Phong_Model  ).material( Color.of( 0,0,0, 1), .5, 1, 1, 40, context.get_instance( "assets/ground.png" ) ),
         text: context.get_instance( Phong_Model  ).material( Color.of( 0,0,0, 1), .5, 1, 1, 40, context.get_instance( "assets/text.png" ) ),
-        yellow: context.get_instance( Phong_Model ).material( Color.of( .93, .93, 0,  1 ), 0.5, 1, .7, 40 ),  // Call material() on the Phong_Shader,
+        yellow: context.get_instance( Phong_Model ).material( Color.of( .93, .93, 0,  1 ), 0.5, 1, .7, 40 ),  
         brown:  context.get_instance( Phong_Model ).material( Color.of( .3, .3, .1,  1 ), .2, 1,  1, 40 ),
-        brown2:  context.get_instance( Phong_Model ).material( Color.of( .4, .26, .13,  1 ), 1, .7,  1, 40 ),  // which returns a special-made "material" 
-        red:    context.get_instance( Phong_Model ).material( Color.of(  1,  0,  0, 1 ), 0.6, .7, 1, 40 ),  // (a JavaScript object)
+        red:    context.get_instance( Phong_Model ).material( Color.of(  1,  0,  0, 1 ), 0.6, .7, 1, 40 ),  
         green:  context.get_instance( Phong_Model ).material( Color.of(  0, .5,  0,  1 ), 1, .5, .5, 40 ),
         blue:   context.get_instance( Phong_Model ).material( Color.of(  0,  0,  1, 1 ), .5, .5, .5, 40 ),
-        skyblue:   context.get_instance( Phong_Model ).material( Color.of(  .04,  .71,  1, 1 ), .5, .5, .5, 40 ),
         silver: context.get_instance( Phong_Model ).material( Color.of( .8, .8, .8,  1 ),  0.9,  1, 1, 40 ) } 
       );    
   
@@ -87,7 +81,6 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     model_transform = model_transform.times(Mat4.translation(Vec.of(0, -2.8, 0)));
     model_transform = model_transform.times(Mat4.rotation(rotate, Vec.of(1, 0, 0)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(50, 45, 0)));
-    //model_transform = model_transform.times(Mat4.rotation(45, Vec.of(1, 0, 0)));
     this.shapes.strip.draw(graphics_state, model_transform, this.ground);
   }
 
@@ -98,10 +91,6 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     model_transform = model_transform.times(Mat4.rotation(rotate, Vec.of(1, 0, 0)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(45, 45, 0)));
     this.shapes.strip.draw(graphics_state, model_transform, this.sky);
-
-    // model_transform = Mat4.identity();
-    // model_transform = model_transform.times(Mat4.translation(Vec.of(0, 7, 0)));
-    // this.shapes.sphere.draw(graphics_state, model_transform, this.ground);
   }
 
   draw_body(graphics_state) {
@@ -194,15 +183,6 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     model_transform = model_transform.times(Mat4.translation(Vec.of(0, -0.25, 0)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(0.25, 0.35, 0.25)));
     this.shapes.sphere.draw(graphics_state, model_transform, this.fur);
-    //model_transform = model_transform.times(Mat4.scale(Vec.of(1/0.25, 1/0.5, 1/0.25)));
-    //this.draw_shoe(graphics_state, model_transform, opposite);
-  }
-
-  draw_shoe(graphics_state, model_transform, opposite) {
-    let X_SHOE = 0.1;
-    model_transform = model_transform.times(Mat4.translation(Vec.of(X_SHOE, -0.5, 0)));
-    model_transform = model_transform.times(Mat4.scale(Vec.of(0.3, 0.2, 0.3)));
-    this.shapes.cube.draw(graphics_state, model_transform, this.stars);
   }
 
   draw_bear(graphics_state) {
@@ -255,7 +235,6 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
   }
 
   draw_letter(graphics_state, x_loc, string) {
-
     let model_transform = Mat4.identity();
     model_transform = model_transform.times(Mat4.translation(Vec.of(x_loc, -2, 16)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 0.2)));
@@ -319,7 +298,6 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     }
 
     if ((t > 16 && t < 18.85) || (t > 34 && t < 36.85)) {
-      console.log(DROP_K);
       this.drop_k(graphics_state);
       DROP_K -= 0.06;
     }
@@ -359,19 +337,12 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     let c = graphics_state.camera_transform;
 
     if( t < 2)
-    graphics_state.camera_transform = Mat4.look_at(Vec.of(7.9, 14, 0), Vec.of(8, 11, 0), Vec.of(0, 1, 0));
+      graphics_state.camera_transform = Mat4.look_at(Vec.of(7.9, 14, 0), Vec.of(8, 11, 0), Vec.of(0, 1, 0));
 
     if ((c[0][3] > 0 || c[1][3] > 0 || c[2][3] > -23) && t > 2 && t < 7) {
-      /*
-      graphics_state.camera_transform = Mat4.look_at(Vec.of(CAM_START_X , CAM_START_Y, CAM_START_Z ), 
-      Vec.of(LOOK_START_X + ((t-1.95) * LOOK_MOVE_X), LOOK_START_Y + ((t-1) * LOOK_MOVE_Y), 0), 
-      Vec.of(0, 1, 0));
-      */
-      
       graphics_state.camera_transform = Mat4.look_at(Vec.of(CAM_START_X + ((t-1) * CAM_MOVE_X), CAM_START_Y + ((t-1) * CAM_MOVE_Y), CAM_START_Z + ((t-1) * CAM_MOVE_Z)), 
                                                     Vec.of(LOOK_START_X + ((t-1) * LOOK_MOVE_X), LOOK_START_Y + ((t-1) * LOOK_MOVE_Y), 0), 
-                                                    Vec.of(0, 1, 0));
-                                                    
+                                                    Vec.of(0, 1, 0));                                             
     }
 
     this.drop_sequence(graphics_state, t);
@@ -420,7 +391,6 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     else 
       this.draw_button(graphics_state, 2.7, this.yellow);
     this.draw_letter(graphics_state, 2.38, "L");
-
 
   }
 
