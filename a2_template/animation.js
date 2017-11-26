@@ -4,7 +4,7 @@ points = 0;
 start = 0;
 m_playing = 0;
 
-let music = new Audio('assets/pinkandwhite.mp3');
+let music = new Audio('assets/pinkandwhite_trimmed.mp3');
 
 CAM_START_X = 7.9; 
 CAM_START_Y = 14; 
@@ -293,57 +293,58 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
   }
 
   drop_sequence(graphics_state, t) {
-    if (t > 8 && t < 12) {
+    if ((t > 8 && t < 11.75) || (t > 26 && t < 29.75)) {
       this.drop_a(graphics_state);
       DROP_A -= 0.045;
     }
 
-    if (t > 9 && t < 13) {
+    if ((t > 9 && t < 12.75) || (t > 27 && t < 30.75)) {
       this.drop_k(graphics_state);
       DROP_K -= 0.045;
     }
 
-    if (t > 11 && t < 14.5) {
+    if ((t > 11 && t < 14.05) || (t > 29 && t < 32.05)) {
       this.drop_l(graphics_state);
       DROP_L -= 0.055;
     }
 
-    if (t > 13 && t < 17) {
+    if ((t > 13 && t < 16.75) || (t > 31 && t < 34.75)) {
       this.drop_a(graphics_state);
       DROP_A -= 0.045;
     }
 
-    if (t > 14 && t < 17.5) {
+    if ((t > 14 && t < 17.05) || (t > 33 && t < 36.05)) {
       this.drop_s(graphics_state);
       DROP_S -= 0.055;
     }
 
-    if (t > 16 && t < 19) {
+    if ((t > 16 && t < 18.85) || (t > 34 && t < 36.85)) {
+      console.log(DROP_K);
       this.drop_k(graphics_state);
       DROP_K -= 0.06;
     }
 
-    if (t > 17 && t < 21) {
+    if ((t > 17 && t < 20.75) || (t > 36 && t < 39.75)) {
       this.drop_a(graphics_state);
       DROP_A -= 0.045;
     }
 
-    if (t > 19 && t < 22) {
+    if ((t > 19 && t < 21.85) || (t > 37 && t < 39.85)) {
       this.drop_l(graphics_state);
       DROP_L -= 0.06;
     }
 
-    if (t > 21 && t < 24.5) {
+    if ((t > 21 && t < 24.05) || (t > 38 && t < 41.05)) {
       this.drop_k(graphics_state);
       DROP_K -= 0.055;
     }
 
-    if (t > 22 && t < 26) {
+    if ((t > 22 && t < 25.75) || (t > 39 && t < 42.75)) {
       this.drop_s(graphics_state);
       DROP_S -= 0.045;
     }
 
-    if (t > 24 && t < 28) {
+    if ((t > 24 && t < 27.75) || (t > 41 && t < 44.75)) {
       this.drop_l(graphics_state);
       DROP_L -= 0.045;
     }
