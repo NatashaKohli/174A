@@ -25,10 +25,10 @@ S_PRESSED = false;
 K_PRESSED = false;
 L_PRESSED = false;
 
-DROP_A = 15;
-DROP_S = 15;
-DROP_K = 15;
-DROP_L = 15;
+DROP_A = 7;
+DROP_S = 7;
+DROP_K = 7;
+DROP_L = 7;
 
 //Run game
 class Tutorial_Animation extends Scene_Component  // An example of a Scene_Component that our class Canvas_Manager can manage.  Like most, this one draws 3D shapes.
@@ -176,7 +176,7 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
 
   draw_leg(graphics_state, model_transform, opposite) {
     let X_TOP_LEG = 0.5;
-    let movement_u = (Math.sin(graphics_state.animation_time/200) + 1) * 0.5;
+    let movement_l = (Math.sin(graphics_state.animation_time/200) + 1) * 0.5;
 
     if (opposite) {
       X_TOP_LEG *= -1;
@@ -190,7 +190,7 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     //bottom of leg
     model_transform = model_transform.times(Mat4.scale(Vec.of(1/0.25, 1/0.35, 1/0.25)));
     model_transform = model_transform.times(Mat4.translation(Vec.of(0, -0.25, 0)));
-    model_transform = model_transform.times(Mat4.rotation(movement_u, Vec.of(1, 0, 0)));
+    model_transform = model_transform.times(Mat4.rotation(movement_l, Vec.of(1, 0, 0)));
     model_transform = model_transform.times(Mat4.translation(Vec.of(0, -0.25, 0)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(0.25, 0.35, 0.25)));
     this.shapes.sphere.draw(graphics_state, model_transform, this.fur);
@@ -265,12 +265,31 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
   }
 
   drop_a(graphics_state) {
-    let fall = (Math.sin(graphics_state.animation_time/200)) * 0.25;
-    
     let model_transform = Mat4.identity();
-    model_transform = model_transform.times(Mat4.translation(Vec.of(0, DROP_A, 15)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(-2.7, DROP_A, 15)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 0.2)));
-    this.shapes.sphere.draw(graphics_state, model_transform, this.red);
+    this.shapes.sphere.draw(graphics_state, model_transform, this.yellow);
+  }
+
+  drop_s(graphics_state) {
+    let model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(-1.25, DROP_S, 15)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 0.2)));
+    this.shapes.sphere.draw(graphics_state, model_transform, this.yellow);
+  }
+
+  drop_k(graphics_state) {
+    let model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(1.25, DROP_K, 15)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 0.2)));
+    this.shapes.sphere.draw(graphics_state, model_transform, this.yellow);
+  }
+
+  drop_l(graphics_state) {
+    let model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(2.7, DROP_L, 15)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 0.2)));
+    this.shapes.sphere.draw(graphics_state, model_transform, this.yellow);
   }
     
   draw_scene( graphics_state ) { 
@@ -294,6 +313,16 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
                                                     Vec.of(LOOK_START_X + ((t-1) * LOOK_MOVE_X), LOOK_START_Y + ((t-1) * LOOK_MOVE_Y), 0), 
                                                     Vec.of(0, 1, 0));
                                                     
+    }
+
+    if (t > 8 && t < 12) {
+      this.drop_a(graphics_state);
+      DROP_A -= 0.045;
+    }
+
+    if (t > 9 && t < 13) {
+      this.drop_k(graphics_state);
+      DROP_K -= 0.045;
     }
 
     let model_transform = Mat4.identity();
@@ -329,10 +358,6 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
       this.draw_button(graphics_state, 2.7, this.yellow);
     this.draw_letter(graphics_state, 2.38, "L");
 
-    if (t > 10 && t < 20) {
-      this.drop_a(graphics_state);
-      DROP_A -= 0.04;
-    }
 
   }
 
@@ -363,11 +388,26 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     this.shapes.text.set_string( "Frame Rate: " + Math.round(1/(graphics_state.animation_delta_time/1000)) );
     this.shapes.text.draw( graphics_state, model_transform, this.text);
 
+    model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(-6.75, 5, 10)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 1)));
+    this.shapes.text.set_string( "Animation Time: " + (graphics_state.animation_time/1000).toFixed(2) );
+    this.shapes.text.draw( graphics_state, model_transform, this.text);
+
     frame++;
     A_PRESSED = false;
     S_PRESSED = false;
     K_PRESSED = false;
     L_PRESSED = false;
+
+    if (DROP_A < -3)
+      DROP_A = 7;
+    if (DROP_S < -3)
+      DROP_S = 7;
+      if (DROP_K < -3)
+      DROP_K = 7;
+    if (DROP_L < -3)
+      DROP_L = 7;
     }
   }
 
