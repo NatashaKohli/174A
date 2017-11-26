@@ -306,25 +306,25 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     this.draw_column(graphics_state, false);
 
     if (A_PRESSED)
-      this.draw_button(graphics_state, -2.7, this.red);
+      this.draw_button(graphics_state, -2.7, this.blue);
     else 
       this.draw_button(graphics_state, -2.7, this.yellow);
     this.draw_letter(graphics_state, -2.36, "A");
 
     if (S_PRESSED)
-      this.draw_button(graphics_state, -1.25, this.red);
+      this.draw_button(graphics_state, -1.25, this.blue);
     else 
       this.draw_button(graphics_state, -1.25, this.yellow);
     this.draw_letter(graphics_state, -1.1, "S");
 
     if (K_PRESSED)
-      this.draw_button(graphics_state, 1.25, this.red);
+      this.draw_button(graphics_state, 1.25, this.blue);
     else 
       this.draw_button(graphics_state, 1.25, this.yellow);
     this.draw_letter(graphics_state, 1.1, "K");
 
     if (L_PRESSED)
-      this.draw_button(graphics_state, 2.7, this.red);
+      this.draw_button(graphics_state, 2.7, this.blue);
     else 
       this.draw_button(graphics_state, 2.7, this.yellow);
     this.draw_letter(graphics_state, 2.38, "L");
