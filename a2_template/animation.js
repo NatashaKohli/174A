@@ -494,7 +494,7 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
       DROP_A = 7;
     if (DROP_S < -3)
       DROP_S = 7;
-      if (DROP_K < -3)
+    if (DROP_K < -3)
       DROP_K = 7;
     if (DROP_L < -3)
       DROP_L = 7;
