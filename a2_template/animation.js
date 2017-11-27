@@ -16,10 +16,23 @@ CAM_MOVE_Z = 4.3;
 
 LOOK_START_X = 8; 
 LOOK_START_Y = 11;
-LOOK_START_Z = 0;
 LOOK_MOVE_X = -1.45;
 LOOK_MOVE_Y = -2;
-LOOK_MOVE_Z = 0.01;
+
+CAM_START2_X = 0; 
+CAM_START2_Y = 0; 
+CAM_START2_Z = 23; 
+CAM_MOVE2_Z = -0.2;
+
+LOOK_START2_X = 0; 
+LOOK_START2_Y = -2.7;
+LOOK_START2_Z = -15;
+LOOK_MOVE2_Y = 0.05;
+LOOK_MOVE2_Z = 0.2;
+
+SAVED_END_CZ = 0;
+SAVED_END_LY = 0;
+SAVED_END_LZ = 0;
 
 A_PRESSED = false;
 S_PRESSED = false;
@@ -373,8 +386,11 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     if (t > 8 && t < 44.75)
       this.drop_sequence(graphics_state, t);
     
-    if (t > 45) {
+    if (t > 45 && t < 62) {
       scene = 2;
+      graphics_state.camera_transform = Mat4.look_at(Vec.of(CAM_START2_X, CAM_START2_Y, CAM_START2_Z + ((t-1) * CAM_MOVE2_Z)), 
+                                                    Vec.of(LOOK_START2_X, LOOK_START2_Y + ((t-1) * LOOK_MOVE2_Y), LOOK_START2_Z + ((t-1) * LOOK_MOVE2_Z)), 
+                                                    Vec.of(0, 1, 0));
     }
 
     let model_transform = Mat4.identity();
