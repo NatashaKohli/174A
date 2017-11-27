@@ -449,10 +449,21 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     this.shapes.text.draw( graphics_state, model_transform, this.text);
   }
 
+  draw_end(graphics_state) {
+    let model_transform = Mat4.identity();
+    model_transform = model_transform.times(Mat4.translation(Vec.of(-3, 0, 0)));
+    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 1)));
+    this.shapes.text.set_string( "Your score was " + points + "!");
+    this.shapes.text.draw( graphics_state, model_transform, this.text);
+  }
+
   display( graphics_state ) {
     if (!start) {
       this.draw_opening(graphics_state);
       graphics_state.animation_time = 0;
+    }
+    else if ((graphics_state.animation_time/1000) > 68) {
+      this.draw_end(graphics_state);
     }
     else {
     if (!m_playing) {
