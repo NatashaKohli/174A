@@ -3,6 +3,7 @@ frame = 0;
 points = 0;
 start = 0;
 m_playing = 0;
+scene = 1;
 
 let music = new Audio('assets/pinkandwhite_trimmed.mp3');
 
@@ -94,10 +95,20 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
   }
 
   draw_body(graphics_state) {
-    let jump = (Math.sin(graphics_state.animation_time/200)) * 0.25;
-
     let model_transform = Mat4.identity();
-    model_transform = model_transform.times(Mat4.translation(Vec.of(0, jump, 0)));
+
+    if (scene == 1) {
+      let jump = (Math.sin(graphics_state.animation_time/200)) * 0.25;
+      model_transform = model_transform.times(Mat4.translation(Vec.of(0, jump, 0)));
+    }
+    
+    else if (scene == 2) {
+      let rotate = (Math.sin(graphics_state.animation_time/500)) * 0.1;
+      model_transform = model_transform.times(Mat4.translation(Vec.of(0, -1.5, 0)));
+      model_transform = model_transform.times(Mat4.rotation(rotate, Vec.of(0, 0, 1)));
+      model_transform = model_transform.times(Mat4.translation(Vec.of(0, 1.5, 0)));
+    }
+
     model_transform = model_transform.times(Mat4.scale(Vec.of(1.2, 1.5, 1)));
     this.shapes.sphere.draw(graphics_state, model_transform, this.fur);
     model_transform = model_transform.times(Mat4.scale(Vec.of(1/1.2, 1/1.5, 1)));
@@ -129,15 +140,27 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
 
   draw_arm(graphics_state, model_transform, opposite) {
     let X_TOP_ARM = 1;
-    let rotate = 0.87;
-    let movement_u = (Math.sin(graphics_state.animation_time/200)) * 0.3;
-    let movement_l = (Math.sin(graphics_state.animation_time/200)+3) * 0.25;
+    let rotate, movement_u, movement_l = 0;
+
+    if (scene == 1) {
+      rotate = 0.87;
+      movement_u = (Math.sin(graphics_state.animation_time/200)) * 0.3;
+      movement_l = (Math.sin(graphics_state.animation_time/200)+3) * 0.25;
+    }
+
+    else if (scene == 2) {
+      rotate = 3 * Math.PI/4;
+      movement_u = (Math.sin(graphics_state.animation_time/500)) * 0.3;
+    }
 
     if (opposite) {
       X_TOP_ARM *= -1;
       rotate *= -1;
-      movement_u *= -1;
-      movement_l *= -1;
+
+      if (scene == 1) {
+        movement_u *= -1;
+        movement_l *= -1;
+      }
     }
 
     //top of arm
@@ -151,7 +174,8 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     //bottom of arm
     model_transform = model_transform.times(Mat4.scale(Vec.of(1/0.25, 1/0.5, 1/0.25)));
     model_transform = model_transform.times(Mat4.translation(Vec.of(0 , -0.4, 0)));
-    model_transform = model_transform.times(Mat4.rotation(movement_l, Vec.of(0, 0, 1)));
+    if (scene == 1)
+      model_transform = model_transform.times(Mat4.rotation(movement_l, Vec.of(0, 0, 1)));
     model_transform = model_transform.times(Mat4.translation(Vec.of(0 , -0.45, 0)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(0.25, 0.4, 0.25)));
     this.shapes.sphere.draw(graphics_state, model_transform, this.fur);
@@ -179,7 +203,8 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     //bottom of leg
     model_transform = model_transform.times(Mat4.scale(Vec.of(1/0.25, 1/0.35, 1/0.25)));
     model_transform = model_transform.times(Mat4.translation(Vec.of(0, -0.25, 0)));
-    model_transform = model_transform.times(Mat4.rotation(movement_l, Vec.of(1, 0, 0)));
+    if (scene == 1)
+      model_transform = model_transform.times(Mat4.rotation(movement_l, Vec.of(1, 0, 0)));
     model_transform = model_transform.times(Mat4.translation(Vec.of(0, -0.25, 0)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(0.25, 0.35, 0.25)));
     this.shapes.sphere.draw(graphics_state, model_transform, this.fur);
@@ -345,7 +370,12 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
                                                     Vec.of(0, 1, 0));                                             
     }
 
-    this.drop_sequence(graphics_state, t);
+    if (t > 8 && t < 44.75)
+      this.drop_sequence(graphics_state, t);
+    
+    if (t > 45) {
+      scene = 2;
+    }
 
     let model_transform = Mat4.identity();
 
