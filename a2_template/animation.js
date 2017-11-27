@@ -162,6 +162,7 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
     }
 
     else if (scene == 2) {
+      X_TOP_ARM = 0.9;
       rotate = 3 * Math.PI/4;
       movement_u = (Math.sin(graphics_state.animation_time/500)) * 0.3;
     }
