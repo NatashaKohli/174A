@@ -75,7 +75,6 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
         yellow: context.get_instance( Phong_Model ).material( Color.of( .93, .93, 0,  1 ), 0.5, 1, .7, 40 ),  
         brown:  context.get_instance( Phong_Model ).material( Color.of( .3, .3, .1,  1 ), .2, 1,  1, 40 ),
         red:    context.get_instance( Phong_Model ).material( Color.of(  1,  0,  0, 1 ), 0.6, .7, 1, 40 ),  
-        green:  context.get_instance( Phong_Model ).material( Color.of(  0, .5,  0,  1 ), 1, .5, .5, 40 ),
         blue:   context.get_instance( Phong_Model ).material( Color.of(  0,  0,  1, 1 ), .5, .5, .5, 40 ),
         silver: context.get_instance( Phong_Model ).material( Color.of( .8, .8, .8,  1 ),  0.9,  1, 1, 40 ) } 
       );    
@@ -451,7 +450,7 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
 
   draw_end(graphics_state) {
     let model_transform = Mat4.identity();
-    model_transform = model_transform.times(Mat4.translation(Vec.of(-3, 0, 0)));
+    model_transform = model_transform.times(Mat4.translation(Vec.of(-3, 1, 0)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 1)));
     this.shapes.text.set_string( "Your score was " + points + "!");
     this.shapes.text.draw( graphics_state, model_transform, this.text);
@@ -481,12 +480,6 @@ class Tutorial_Animation extends Scene_Component  // An example of a Scene_Compo
 
     model_transform = Mat4.identity();
     model_transform = model_transform.times(Mat4.translation(Vec.of(-6.75, 5, 10)));
-    model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 1)));
-    this.shapes.text.set_string( "Animation Time: " + (graphics_state.animation_time/1000).toFixed(2) );
-    this.shapes.text.draw( graphics_state, model_transform, this.text);
-
-    model_transform = Mat4.identity();
-    model_transform = model_transform.times(Mat4.translation(Vec.of(-6.75, 4.6, 10)));
     model_transform = model_transform.times(Mat4.scale(Vec.of(0.2, 0.2, 1)));
     this.shapes.text.set_string( "Points: " + points );
     this.shapes.text.draw( graphics_state, model_transform, this.text);
